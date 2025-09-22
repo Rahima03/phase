@@ -1,0 +1,78 @@
+body {
+    background-color: #f8f9fa;
+    padding-top: 20px;
+}
+
+.hero {
+    background: linear-gradient(135deg, #0062cc, #0095ff);
+    color: white;
+    padding: 60px 20px;
+    border-radius: 10px;
+    margin-bottom: 40px;
+    text-align: center;
+}
+        
+.feature-box {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
+    height: 100%;
+    text-align: center;
+}
+        
+.feature-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+}
+        
+.feature-icon {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    color: #0062cc;
+}
+
+.form-container {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    max-width: 800px;
+    margin: 0 auto;
+}
+        
+.page-header {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #056fcbfb;
+}
+
+.table-container {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+        
+.page-header {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #0062cc;
+}
+        
+.table th {
+    background-color: #0062cc;
+    color: white;
+}
+        
+.verified-badge {
+    background-color: #28a745;
+        
+}
+        
+.pending-badge {
+            
+    background-color: #ffc107;
+    color: #212529;
+}
