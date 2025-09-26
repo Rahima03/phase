@@ -76,3 +76,21 @@ body {
     background-color: #ffc107;
     color: #212529;
 }
+
+.login-card {
+    max-width: 420px;
+    border-radius: 15px;
+}
+    
+.form-switcher button {
+    width: 50%;
+    border-radius: 0;
+}
+
+.login-form {
+    display: none;
+}
+    
+.login-form.active {
+    display: block;
+}

@@ -13,11 +13,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = htmlspecialchars(trim($_POST['email']));
     $phone = htmlspecialchars(trim($_POST['phone']));
     $program = htmlspecialchars(trim($_POST['program']));
+    $password = $_POST['password'];
+    $confirm_password = $_POST['confirm_password'];
     
+   
+    if ($password !== $confirm_password) {
+        die("Error: Passwords do not match.");
+    }
+    
+    if (strlen($password) < 8) {
+        die("Error: Password must be at least 8 characters long.");
+    }
+    
+    
+    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
     $verification_token = bin2hex(random_bytes(32));
     
-    $stmt = $conn->prepare("INSERT INTO students (name, email, phone, program, verification_token) VALUES (?, ?, ?, ?, ?)");
-    $stmt->bind_param("sssss", $name, $email, $phone, $program, $verification_token);
+    $stmt = $conn->prepare("INSERT INTO students (name, email, phone, program, password, verification_token) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("ssssss", $name, $email, $phone, $program, $hashed_password, $verification_token);
     
     if ($stmt->execute()) {
         $mail = new PHPMailer(true);

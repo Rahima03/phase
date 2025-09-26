@@ -2,16 +2,28 @@
 require_once 'db_config.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Handle form submission (update record)
     $id      = $_POST['id'];
     $name    = htmlspecialchars(trim($_POST['name']));
     $email   = htmlspecialchars(trim($_POST['email']));
     $phone   = htmlspecialchars(trim($_POST['phone']));
     $program = htmlspecialchars(trim($_POST['program']));
-    
-    $stmt = $conn->prepare("UPDATE students SET name=?, email=?, phone=?, program=? WHERE id=?");
-    $stmt->bind_param("ssssi", $name, $email, $phone, $program, $id);
-    
+    $password = trim($_POST['password']); 
+    $confirm_password = trim($_POST['confirm_password']); 
+
+    if (!empty($password)) {
+        if ($password !== $confirm_password) {
+            die("Error: Passwords do not match. <a href='edit.php?id=$id'>Go back</a>");
+        }
+
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
+        $stmt = $conn->prepare("UPDATE students SET name=?, email=?, phone=?, program=?, password=? WHERE id=?");
+        $stmt->bind_param("sssssi", $name, $email, $phone, $program, $hashedPassword, $id);
+    } else {
+        $stmt = $conn->prepare("UPDATE students SET name=?, email=?, phone=?, program=? WHERE id=?");
+        $stmt->bind_param("ssssi", $name, $email, $phone, $program, $id);
+    }
+
     if ($stmt->execute()) {
         $stmt->close();
         $conn->close();
@@ -20,26 +32,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         echo "Error updating record: " . $stmt->error;
     }
-    
+
     $stmt->close();
     $conn->close();
 } 
 elseif (isset($_GET['id'])) {
-    // Fetch student details
     $id = $_GET['id'];
-    
+
     $stmt = $conn->prepare("SELECT id, name, email, phone, program FROM students WHERE id = ?");
     $stmt->bind_param("i", $id);
     $stmt->execute();
     $result = $stmt->get_result();
-    
+
     if ($result->num_rows > 0) {
         $student = $result->fetch_assoc();
     } else {
         echo "Student not found.";
         exit();
     }
-    
+
     $stmt->close();
     $conn->close();
 } 
@@ -48,17 +59,6 @@ else {
     exit();
 }
 ?>
-
-
-
-
-
-
-
-
-
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -112,6 +112,27 @@ else {
                             </div>
                         </div>
 
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="password" class="form-label">New Password (leave blank to keep old one)</label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" id="password" name="password">
+                                    <button type="button" class="btn btn-outline-secondary" onclick="togglePassword('password', this)">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="confirm_password" class="form-label">Confirm New Password</label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" id="confirm_password" name="confirm_password">
+                                    <button type="button" class="btn btn-outline-secondary" onclick="togglePassword('confirm_password', this)">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                             <a href="student_lists.php" class="btn btn-secondary me-md-2">Cancel</a>
                             <button type="submit" class="btn btn-primary">Update Student</button>
@@ -121,6 +142,8 @@ else {
             </div>
         </div>
     </div>
+
+    <script src="script.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
